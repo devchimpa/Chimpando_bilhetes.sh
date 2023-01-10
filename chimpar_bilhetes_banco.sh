@@ -33,6 +33,8 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
+echo "Exemplos: 2023-01-01.tar.gz , 2023-01*, 2023* "
+echo "#################################################"
 read ARQUIVO_ZIP
 
 clear
@@ -45,6 +47,8 @@ echo "        /
     C oo)   -----
     _( ^)  /    /
    /__m~\m/____/ "
+echo "#################################################"
+echo " Exemplos: Conta, ramal, ou tipo de bilhete "
 echo "#################################################"
 read FILTRO_GREP
 
@@ -59,7 +63,7 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
-sleep 5
+sleep 2
 # inicialmente o script está pegando como primeiro parametro os bilhetes
 # e como segundo parametro o filtro que deve ser aplicado.
 # futuramente pretendo solicitar cada parametro separadamente
