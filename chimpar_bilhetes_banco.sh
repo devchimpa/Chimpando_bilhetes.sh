@@ -25,7 +25,7 @@ CAMINHO_ORIGEM="/home/backups/"
 clear
 echo "##################################################"
 echo "           --------------------------------------"
-echo "          insira as datas dos bilhetes desejados:"
+echo "          insira a data do bilhete desejado "
 echo "         /--------------------------------------"
 echo "        /
      /~\
@@ -33,10 +33,11 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
-echo "Exemplos: 2023-01-01.tar.gz , 2023-01*, 2023* "
+echo "Exemplo: 2023-01-01"
 echo "#################################################"
+ls -m $CAMINHO_ORIGEM
 read ARQUIVO_ZIP
-
+#echo "$ARQUIVO_ZIP 1"
 clear
 echo "######################################################"
 echo "           ------------------------------------------"
@@ -63,10 +64,8 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
-sleep 2
-# inicialmente o script está pegando como primeiro parametro os bilhetes
-# e como segundo parametro o filtro que deve ser aplicado.
-# futuramente pretendo solicitar cada parametro separadamente
+sleep 3
+clear
 #
 if [ ! -d /tmp/bilhetes ]
 then    mkdir -p /tmp/bilhetes
@@ -76,11 +75,14 @@ else
 fi
 
 cd $CAMINHO_ORIGEM
-cp $ARQUIVO_ZIP $CAMINHO_DESTINO
-#####################################Trecho necessitando de correção
+cp -v $ARQUIVO_ZIP* $CAMINHO_DESTINO
+#echo "$ARQUIVO_ZIP 2"
 cd $CAMINHO_DESTINO
-tar -zxf $ARQUIVO_ZIP
-tar -xf *.tar
+tar -zxvf "$ARQUIVO_ZIP.tar.gz"
+#echo "$ARQUIVO_ZIP 3"
+sleep 5
+tar -xvf *.tar
+
 
 grep -ir $FILTRO_GREP >> bilhetes_salvos.txt
 
@@ -88,10 +90,9 @@ cat bilhetes_salvos.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > inser
 
 rm bilhetes_salvos.txt
 
-clear
 echo "######################################################"
 echo "           -------------------------------------------"
-echo "          Prontinho. Arquivo inserts em /tmp/bilhetes/"
+echo "          Pronto. Arquivo inserts.txt em /tmp/bilhetes/"
 echo "         /--------------------------------------------"
 echo "        /
      /~\
@@ -99,8 +100,8 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
-sleep 5
-clear
+
+
 
 #ls $CAMIMNHO_DESTINO
 #$CAMINHO_ORIGEM
