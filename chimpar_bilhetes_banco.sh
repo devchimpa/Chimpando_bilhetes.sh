@@ -77,7 +77,7 @@ fi
 
 cd $CAMINHO_ORIGEM
 cp $ARQUIVO_ZIP $CAMINHO_DESTINO
-
+#####################################Trecho necessitando de correção
 cd $CAMINHO_DESTINO
 tar -zxf $ARQUIVO_ZIP
 tar -xf *.tar
