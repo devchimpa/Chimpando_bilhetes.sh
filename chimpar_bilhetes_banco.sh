@@ -36,18 +36,30 @@ CAMINHO_ORIGEM="/home/backups/"
 
 clear
 echo "##################################################"
-echo "           --------------------------------------"
-echo "          Insira os arquivos de bilhetes.       "
-echo "         /--------------------------------------"
-echo "        /
+echo "          "
+echo "           "
+echo "         "
+echo "
      /~\
     C oo)   -----
     _( ^)  /    /
    /__m~\m/____/ "
 echo "############################################################"
+sleep 1
+clear
+echo "##################################################"
+echo "           --------------------------------------"
+echo "          Insira os arquivos de bilhetes.       "
+echo "         /--------------------------------------"
+echo "        /
+     /~\
+   C(o o)D   -----
+    _(^)   /    /
+   /__m~\m/____/ "
+echo "############################################################"
 echo "Ex: 2023-01-01.tar.gz , 2023-01-* 2023-01-0[1-31].tar.gz     "
 echo "############################################################"
-ls -m $CAMINHO_ORIGEM
+ls -m $CAMINHO_ORIGEM | tr ',' ' '
 read ARQUIVO_ENTRADA
 clear
 
@@ -78,68 +90,62 @@ echo "        /
    /__m~\m/____/ "
 echo "#################################################"
 
+#echo $ARQUIVO_ENTRADA
+
+############################## Este trecho pode resolver parte do código e reduzir as filtragens
+
 echo $ARQUIVO_ENTRADA >> /tmp/listadebilhetes.txt
-cat -T /tmp/listadebilhetes.txt | tr ' ' '\n' > /tmp/nova_lista.txt
-sleep 2
-rm /tmp/listadebilhetes.txt
 
+for linha in $(cat /tmp/listadebilhetes.txt)
+        do
+                if [ -f $CAMINHO_ORIGEM/$linha ]
+                then
+                        #CRIAR PASTA
+                                if [ ! -d /tmp/bilhetes ]
+                                then    mkdir -p /tmp/bilhetes
+                                CAMINHO_DESTINO="/tmp/bilhetes"
+                                else
+                                CAMINHO_DESTINO="/tmp/bilhetes"
+                                fi
 
-ARQUIVO_PRIMARIO="/tmp/nova_lista.txt"
-while read PRIMEIRAENTRADA;
-do
-        cd $CAMINHO_ORIGEM
-        ls "$CAMINHO_ORIGEM" | grep "$PRIMEIRAENTRADA" > /tmp/lista_pasta.txt
-        sort /tmp/lista_pasta.txt | uniq | grep / -v > /tmp/sembranco.txt
-        awk 'NF>0' /tmp/sembranco.txt > /tmp/ListaFinal.txt
+                #COPIAR OS ARQUIVOS PRO DESTINO
 
-done < $ARQUIVO_PRIMARIO
+                cd $CAMINHO_ORIGEM
+                cp -rpuv $linha $CAMINHO_DESTINO
+                cd $CAMINHO_DESTINO
 
-rm /tmp/lista_pasta.txt
-rm /tmp/nova_lista.txt
+                echo "Desarquivando ..."
+                sleep 3
+                tar -zxvf $linha
+                rm $linha
 
-ARQUIVO_TEXTO="/tmp/ListaFinal.txt"
+                ARQUIVO_TAR=$(ls *tar)
+                tar -xvf "$ARQUIVO_TAR"
+                echo "Removendo tar..."
+                rm "$ARQUIVO_TAR"
+                sleep 3
 
-while read ARQUIVOLINHA;
-do
-        cd $CAMINHO_ORIGEM
-                if [ ! -d /tmp/bilhetes ]
-                then    mkdir -p /tmp/bilhetes
-                CAMINHO_DESTINO="/tmp/bilhetes"
-                else
-                CAMINHO_DESTINO="/tmp/bilhetes"
+                ARQUIVO_PASTA=$(ls )
+                grep -ir $FILTRO_GREP >> /tmp/grepbilhetes.txt
+
+                echo "Filtrando Bilhetes"
+                cat /tmp/grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > /tmp/inserts.txt
+                sleep 3
+                rm -r $ARQUIVO_PASTA
+
+                        else
+                                clear
+                                echo "Arquivo Inválido, log armazenado na pasta tmp"
+                                echo "Arquivo Inválido $linha" >> /tmp/log_de_erro_chimposo.txt
+                        exit
                 fi
-        echo "Copiando ... "
-        sleep 2
-        cp -v $ARQUIVOLINHA /tmp/bilhetes
-        cd $CAMINHO_DESTINO
-        echo "Desarquivando ..."
-        sleep 2
-        tar -zxvf $ARQUIVOLINHA
-        sleep 2
-        rm $ARQUIVOLINHA
-        ARQUIVOTAR=$(ls *.tar)
-        echo "Descompactando..."
-        sleep 2
-        tar -xvf $ARQUIVOTAR
-        sleep 2
-        echo "Procurando bilhetes..."
-        rm $ARQUIVOTAR
-        sleep 2
-        grep -ir $FILTRO_GREP >> /tmp/grepbilhetes.txt
-        PASTA=$(ls )
-        rm -r $PASTA
+
+        done
+
         cd /tmp
-        cat grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > inserts.txt
+        rm -r bilhetes
+        rm listadebilhetes.txt
         rm grepbilhetes.txt
-
-done < $ARQUIVO_TEXTO
-
-sleep 2
-
-rm -r /tmp/bilhetes
-rm -r /tmp/sembranco.txt
-rm -r /tmp/ListaFinal.txt
-
 
 echo "######################################################"
 echo "           -------------------------------------------"
