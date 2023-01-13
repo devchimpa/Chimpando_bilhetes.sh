@@ -134,9 +134,18 @@ for linha in $(cat /tmp/listadebilhetes.txt)
                 rm -r $ARQUIVO_PASTA
 
                         else
+                                cd /tmp
                                 clear
                                 echo "Arquivo Inválido, log armazenado na pasta tmp"
                                 echo "Arquivo Inválido $linha" >> /tmp/log_de_erro_chimposo.txt
+
+                                if [ -f /tmp/listadebilhetes.txt ]
+                                        then
+                                                rm listadebilhetes.txt
+                                                rm grepbilhetes.txt
+                                                rm -r bilhetes
+                                fi
+
                         exit
                 fi
 
