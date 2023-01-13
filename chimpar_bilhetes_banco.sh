@@ -44,9 +44,9 @@ echo "        /
     C oo)   -----
     _( ^)  /    /
    /__m~\m/____/ "
-echo "####################################################"
-echo "Ex: 2023-01-01.tar.gz , 2023-01-* ou 2023-01-0[1-31].tar.gz "
-echo "####################################################"
+echo "############################################################"
+echo "Ex: 2023-01-01.tar.gz , 2023-01-* 2023-01-0[1-31].tar.gz     "
+echo "############################################################"
 ls -m $CAMINHO_ORIGEM
 read ARQUIVO_ENTRADA
 clear
@@ -61,6 +61,8 @@ echo "        /
     C oo)   -----
     _( ^)  /    /
    /__m~\m/____/ "
+echo "#################################################"
+echo "Ex: conta, ramal, atendidas ..."
 echo "#################################################"
 read FILTRO_GREP
 clear
@@ -81,14 +83,12 @@ cat -T /tmp/listadebilhetes.txt | tr ' ' '\n' > /tmp/nova_lista.txt
 sleep 2
 rm /tmp/listadebilhetes.txt
 
-#cat /tmp/nova_lista.txt
 
 ARQUIVO_PRIMARIO="/tmp/nova_lista.txt"
 while read PRIMEIRAENTRADA;
 do
         cd $CAMINHO_ORIGEM
         ls "$CAMINHO_ORIGEM" | grep "$PRIMEIRAENTRADA" > /tmp/lista_pasta.txt
-       # ls "$CAMINHO_ORIGEM$PRIMEIRAENTRADA" > /tmp/lista_pasta.txt
         sort /tmp/lista_pasta.txt | uniq | grep / -v > /tmp/sembranco.txt
         awk 'NF>0' /tmp/sembranco.txt > /tmp/ListaFinal.txt
 
@@ -101,7 +101,6 @@ ARQUIVO_TEXTO="/tmp/ListaFinal.txt"
 
 while read ARQUIVOLINHA;
 do
-        #echo "Arquivo: $ARQUIVOLINHA"
         cd $CAMINHO_ORIGEM
                 if [ ! -d /tmp/bilhetes ]
                 then    mkdir -p /tmp/bilhetes
@@ -130,7 +129,7 @@ do
         PASTA=$(ls )
         rm -r $PASTA
         cd /tmp
-        cat grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' >                                                                                                  inserts.txt
+        cat grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > inserts.txt
         rm grepbilhetes.txt
 
 done < $ARQUIVO_TEXTO
@@ -152,4 +151,5 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
-
+echo " Agora só enviar para o banco de dados."
+echo "#################################################"
