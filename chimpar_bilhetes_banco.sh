@@ -3,15 +3,32 @@
 # Script feito com o objetivo de acelerar o processo
 #de inserir bilhetes de chamadas no banco.
 #
+#informacoes importantes sobre o que o script  faz...
+#
+# 1 - ele vai pegar o arquivo da pasta de backup
+# 2 - mandar para a tmp
+# 3 - descompactar
+# 4 - dar um grep para saber se tem bilhete.
+# 5 - vai pegar os bilhetes e transformar em txt
+# 6 - pegar os bilhetes do txt e cortar nai parte do insert
+# 7 - remover a pasta, o tar.gz e tar da pasta /tmp
+# 8 - fim do script
 #
 #
-#Desenvolvido por: DevChimpa 10-01-2023
-#contato: chimpadeveloper@gmail.com
 #
-# Atualização 12-01-2023
-# Atualizado a forma como se busca bilhetes para tentar reduzir os erros.
-# próximos passos, testar se foi inserido valor nas variáveis ARQUIVO_ENTRADA e FILTRO_GREP
-# caso FILTRO_GREP esteja vazio, substituir por insert
+#Desenvolvido por: DevChimpa
+#Data: 10-01-2023
+#Contato: chimpadeveloper@gmail.com
+#https://github.com/devchimpa/
+#
+########################################################################
+#
+# Siga o modelo abaixo caso mexa no script: ############################
+#
+#Modificado por:
+#Data:
+#Contato:
+#Modificação feita:
 #
 ##########################################################################
 
@@ -113,7 +130,7 @@ do
         PASTA=$(ls )
         rm -r $PASTA
         cd /tmp
-        cat grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > inserts.txt
+        cat grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' >                                                                                                  inserts.txt
         rm grepbilhetes.txt
 
 done < $ARQUIVO_TEXTO
@@ -135,3 +152,4 @@ echo "        /
     _( ^)  /    /
    /__m~\m/____/ "
 echo "#################################################"
+
