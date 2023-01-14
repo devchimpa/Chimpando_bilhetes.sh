@@ -32,7 +32,9 @@
 #
 ##########################################################################
 
-CAMINHO_ORIGEM="/home/extend/calls/backup/"
+
+CAMINHO_ORIGEM="/home/backups/"
+#CAMINHO_ORIGEM="/home/extend/calls/backup/"
 
 ls  $CAMINHO_ORIGEM 
 echo "##################################################"
@@ -49,6 +51,13 @@ echo "Ex: 2023-01-01.tar.gz , 2023-01-* 2023-01-0[1-31].tar.gz     "
 echo "############################################################"
 read ARQUIVO_ENTRADA
 clear
+VALORENTRADA=$(echo ${#ARQUIVO_ENTRADA})
+if [ $VALORENTRADA -eq 0 ] 
+	then 
+		echo "Insira algum arquivo válido."
+	
+		exit
+fi	
 
 clear
 echo "##################################################"
@@ -63,9 +72,15 @@ echo "        /
 echo "#################################################"
 echo "Ex: conta, ramal, atendidas ..."
 echo "#################################################"
-read FILTRO_GREP 
+read FGREP 
+ENTRADAGREP=$(echo ${#FGREP})
+if [ $ENTRADAGREP -eq 0 ] 
+	then
+	       FILTRO_GREP=Insert
+	fi	       
 clear
-
+#echo "$FILTRO_GREP"
+#sleep 10
 echo "##################################################"
 echo "           --------------------------------------"
 echo "        	Um momento por favor...                "
@@ -79,7 +94,7 @@ echo "#################################################"
 
 #echo $ARQUIVO_ENTRADA
 
-############################## Este primeiro trecho vai filtrar as gravações da pasta
+############################## Este trecho pode resolver parte do código e reduzir as filtragens
 
 echo $ARQUIVO_ENTRADA >> /tmp/listadeentrada.txt
 for listadearquivos in $(cat /tmp/listadeentrada.txt)
@@ -165,5 +180,3 @@ echo "        /
 echo "#################################################"
 echo " Agora só enviar para o banco de dados."
 echo "#################################################"
-
-
