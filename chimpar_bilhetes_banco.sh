@@ -78,7 +78,7 @@ if [ $ENTRADAGREP -eq 0 ]
 	then
 	       FILTRO_GREP=Insert
 	       else	
-	       ENTRADAGREP="$FGREP"
+	       FILTRO_GREP="$FGREP"
 	fi	       
 clear
 #echo "$FILTRO_GREP"
