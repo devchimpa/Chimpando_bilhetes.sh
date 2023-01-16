@@ -10,7 +10,7 @@
 # 3 - descompactar
 # 4 - dar um grep para saber se tem bilhete.
 # 5 - vai pegar os bilhetes e transformar em txt
-# 6 - pegar os bilhetes do txt e cortar nai parte do insert
+# 6 - pegar os bilhetes do txt e cortar na parte do insert
 # 7 - remover a pasta, o tar.gz e tar da pasta /tmp
 # 8 - fim do script
 #
