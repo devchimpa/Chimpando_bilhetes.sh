@@ -33,8 +33,8 @@
 ##########################################################################
 
 
-CAMINHO_ORIGEM="/home/backups/"
-#CAMINHO_ORIGEM="/home/extend/calls/backup/"
+#CAMINHO_ORIGEM="/home/backups/"
+CAMINHO_ORIGEM="/home/extend/calls/backup/"
 
 ls  $CAMINHO_ORIGEM 
 echo "##################################################"
@@ -77,6 +77,8 @@ ENTRADAGREP=$(echo ${#FGREP})
 if [ $ENTRADAGREP -eq 0 ] 
 	then
 	       FILTRO_GREP=Insert
+	       else	
+	       ENTRADAGREP="$FGREP"
 	fi	       
 clear
 #echo "$FILTRO_GREP"
