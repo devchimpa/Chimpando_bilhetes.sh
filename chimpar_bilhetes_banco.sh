@@ -5,7 +5,7 @@
 #
 #informacoes importantes sobre o que o script  faz...
 #
-# 1 - ele vai pegar o arquivo da pasta de backup
+# 1 - ele vai pegar o arquivo da pasta de backup 
 # 2 - mandar para a tmp
 # 3 - descompactar
 # 4 - dar um grep para saber se tem bilhete.
@@ -16,7 +16,7 @@
 #
 #
 #
-#Desenvolvido por: DevChimpa
+#Desenvolvido por: DevChimpa 
 #Data: 10-01-2023
 #Contato: chimpadeveloper@gmail.com
 #https://github.com/devchimpa/
@@ -25,7 +25,7 @@
 #
 # Siga o modelo abaixo caso mexa no script: ############################
 #
-#Modificado por:
+#Modificado por:        
 #Data:
 #Contato:
 #Modificação feita:
@@ -33,152 +33,212 @@
 ##########################################################################
 
 
-#CAMINHO_ORIGEM="/home/backups/"
-CAMINHO_ORIGEM="/home/extend/calls/backup/"
 
-ls  $CAMINHO_ORIGEM
+###########################################################################
+#FUNÇÕES
+###########################################################################
+
+
+CAMINHO_ORIGEM="/home/backups/"
+#CAMINHO_ORIGEM="/home/extend/calls/backup/"
+
+
+LOG="/tmp/log_bilhete_chimposo.txt"
+#ls  $CAMINHO_ORIGEM
+
+
+testa_bilhete(){
+	cat /tmp/listadebilhetes.txt
+	sleep 2
+	leitura_arquivo_bilhete=$(cat /tmp/listadebilhetes.txt)
+	conta_arquivo_bilhetes=$(echo ${#leitura_arquivo_bilhete})	
+	if [ $conta_arquivo_bilhetes -eq 0 ]
+		then
+			clear
+			desenha_macaco "Este arquivo não é válido..."
+			sleep 3
+			echo "Arquivo inserido inválido. " >> $LOG
+			echo $(date) >> "$LOG"
+			remove_lixo
+			exit
+
+	fi
+	}
+
+remove_lixo(){
+cd /tmp
+	if [ -f /tmp/listadebilhetes.txt ] 
+	then
+		rm listadebilhetes.txt
+	fi
+	
+	if [ -d /tmp/bilhetes ]
+	then
+		rm -r bilhetes
+	fi
+	
+	if [ -f /tmp/grepbilhetes.txt ]
+	then
+		rm grepbilhetes.txt
+	fi
+	if [ -f /tmp/listadeentrada.txt ]
+	then
+		rm listadeentrada.txt
+	fi
+}
+
+desenha_macaco(){
 echo "##################################################"
 echo "           --------------------------------------"
-echo "          Insira os arquivos de bilhetes.       "
+echo "           $1                                 "
 echo "         /--------------------------------------"
-echo "        /
-     /~\
+echo "        /   
+     /~\ 
    C(o o)D   -----
     _(^)   /    /
    /__m~\m/____/ "
 echo "############################################################"
+}
+
+desenha_macaco2(){
+echo "##################################################"
+echo "           --------------------------------------"
+echo "         	$1                                "
+echo "         /--------------------------------------"
+echo "        /   
+     /~\ 
+    C oo)   -----
+    _( ^)  /    /
+   /__m~\m/____/ "
+echo "###########################################################"
+}
+
+Le_Entrada(){
+
 echo "Ex: 2023-01-01.tar.gz , 2023-01-* 2023-01-0[1-5].tar.gz     "
 echo "############################################################"
+
 read ARQUIVO_ENTRADA
-clear
+
+
 VALORENTRADA=$(echo ${#ARQUIVO_ENTRADA})
-if [ $VALORENTRADA -eq 0 ]
-        then
-                echo "Insira algum arquivo válido."
+if [ $VALORENTRADA -eq 0 ] 
+	then 
+		echo "Insira algum arquivo válido."
+	
+		exit
+fi	
+}
 
-                exit
-fi
 
-clear
-echo "##################################################"
-echo "           --------------------------------------"
-echo "          Qual informação gostaria de filtrar?   "
-echo "         /--------------------------------------"
-echo "        /
-     /~\
-    C oo)   -----
-    _( ^)  /    /
-   /__m~\m/____/ "
-echo "#################################################"
-echo "Ex: conta, ramal, atendidas ..."
-echo "#################################################"
-read FGREP
+Le_filtro(){
+
+echo "Ex: Conta - Ramal - Atendidas - Campanhas     "
+echo "############################################################"
+read FGREP 
 ENTRADAGREP=$(echo ${#FGREP})
-if [ $ENTRADAGREP -eq 0 ]
-        then
-               FILTRO_GREP=Insert
-        else FILTRO_GREP="$FGREP"
-        fi
-clear
-#echo "$FILTRO_GREP"
-#sleep 10
-echo "##################################################"
-echo "           --------------------------------------"
-echo "          Um momento por favor...                "
-echo "         /--------------------------------------"
-echo "        /
-     /~\
-    C oo)   -----
-    _( ^)  /    /
-   /__m~\m/____/ "
-echo "#################################################"
+if [ $ENTRADAGREP -eq 0 ] 
+	then
+	       FILTRO_GREP=Insert
+	else FILTRO_GREP="$FGREP"
+	fi	     
+}
 
-#echo $ARQUIVO_ENTRADA
 
-############################## Este trecho pode resolver parte do código e reduzir as filtragens
+cria_entrada_txt(){
 
 echo "$ARQUIVO_ENTRADA" >> /tmp/listadeentrada.txt
+}
+
+
+separa_bilhetes(){
 
 for listadearquivos in $(cat /tmp/listadeentrada.txt)
-        do
-                ls $CAMINHO_ORIGEM | grep $listadearquivos >> /tmp/listadebilhetes.txt
-        done
-echo "## ARQUIVOS LOCALIZADOS...##"
+	do 
+		ls $CAMINHO_ORIGEM | grep $listadearquivos >> /tmp/listadebilhetes.txt
+	done
 cat /tmp/listadebilhetes.txt
-sleep 3
 
+}
+criar_pasta_destino(){
+	if [ ! -d /tmp/bilhetes ] 
+then	mkdir -p /tmp/bilhetes
+CAMINHO_DESTINO="/tmp/bilhetes"	
+else
+CAMINHO_DESTINO="/tmp/bilhetes"	
+fi }
+
+				
+			
+copia_bilhetes(){
+
+		desenha_macaco2 " Verificando..."
+		testa_bilhete
+		clear
+		desenha_macaco "Iniciando..."
+		sleep 2
 for linha in $(cat /tmp/listadebilhetes.txt)
-        do
+	do
+		if [ -f "$CAMINHO_ORIGEM""$linha" ]
+		then
+			#CRIAR PASTA DE DESTINO
+			criar_pasta_destino
+				#COPIAR OS ARQUIVOS PRO DESTINO
+			
+				cd $CAMINHO_ORIGEM
+	 			cp -rpuv $linha $CAMINHO_DESTINO
+				cd $CAMINHO_DESTINO 
+	
+				echo "Desarquivando ..."
+				sleep 2	
+				tar -zxvf $linha
+				rm $linha
 
-                if [ -f $CAMINHO_ORIGEM/$linha ]
-                then
-                        #CRIAR PASTA
-                                if [ ! -d /tmp/bilhetes ]
-                                then    mkdir -p /tmp/bilhetes
-                                CAMINHO_DESTINO="/tmp/bilhetes"
-                                else
-                                CAMINHO_DESTINO="/tmp/bilhetes"
-                                fi
+				ARQUIVO_TAR=$(ls *tar)
+				tar -xvf "$ARQUIVO_TAR"
+				echo "Removendo tar..."
+				rm "$ARQUIVO_TAR"
+				sleep 2
 
-                #COPIAR OS ARQUIVOS PRO DESTINO
+				ARQUIVO_PASTA=$(ls )
+				grep -ir $FILTRO_GREP >> /tmp/grepbilhetes.txt 
 
-                cd $CAMINHO_ORIGEM
-                cp -rpuv $linha $CAMINHO_DESTINO
-                cd $CAMINHO_DESTINO
+				echo "Filtrando Bilhetes"
+				sleep 2
+				cat /tmp/grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > /tmp/inserts.txt
+					else
+					echo "Arquivo Inválido, log armazenado na pasta /tmp"
+					echo "Arquivo Inválido $linha" >> $LOG
+			fi
 
-                echo "Desarquivando ..."
-                sleep 3
-                tar -zxvf $linha
-                rm $linha
+	done
 
-                ARQUIVO_TAR=$(ls *tar)
-                tar -xvf "$ARQUIVO_TAR"
-                echo "Removendo tar..."
-                rm "$ARQUIVO_TAR"
-                sleep 3
+	clear
+	remove_lixo
+	desenha_macaco2 "Arquivo de Inserts em /tmp/inserts.txt"
+}
 
-                ARQUIVO_PASTA=$(ls )
-                grep -ir $FILTRO_GREP >> /tmp/grepbilhetes.txt
+###################################################################################################################
+# PROGRAMA EXECUTANDO
+###################################################################################################################
 
-                echo "Filtrando Bilhetes"
-                cat /tmp/grepbilhetes.txt | awk -F "INSERT INTO" '{print "INSERT INTO"$2}' > /tmp/inserts.txt
-                sleep 3
-                rm -r $ARQUIVO_PASTA
+clear
+remove_lixo
+echo "Script iniciado: " >> "$LOG"
+echo $(date) >> "$LOG"
+ls $CAMINHO_ORIGEM
+desenha_macaco "Insira os arquivos de Bilhetes."
+Le_Entrada
+clear
 
-                        else
-                                cd /tmp
-                                clear
-                                echo "Arquivo Inválido, log armazenado na pasta tmp"
-                                echo "Arquivo Inválido $linha" >> /tmp/log_de_erro_chimposo.txt
+desenha_macaco2 "Insira o tipo de filtro."
+Le_filtro
+cria_entrada_txt
 
-                                if [ -f /tmp/listadebilhetes.txt ]
-                                        then
-                                                rm listadebilhetes.txt
-                                                rm grepbilhetes.txt
-                                                rm -r bilhetes
-                                                rm listadeentrada.txt
-                                fi
+clear
+separa_bilhetes
+clear
+copia_bilhetes
 
-                        exit
-                fi
-
-        done
-
-        cd /tmp
-        rm -r bilhetes
-        rm listadebilhetes.txt
-        rm grepbilhetes.txt
-        rm listadeentrada.txt
-
-echo "######################################################"
-echo "           -------------------------------------------"
-echo "          Pronto. Arquivo inserts.txt em /tmp"
-echo "         /--------------------------------------------"
-echo "        /
-     /~\
-    C oo)   -----
-    _( ^)  /    /
-   /__m~\m/____/ "
-echo "#################################################"
-echo " Agora só enviar para o banco de dados."
-echo "#################################################"
+echo "Script finalizado: " >> "$LOG"
+echo $(date) >> "$LOG"
